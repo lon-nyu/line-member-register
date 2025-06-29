@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>會員註冊</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>LINE 會員註冊</h2>
+  <form id="registerForm">
+    <p>LINE UID：<span id="uid">讀取中...</span></p>
+    <p>姓名：<input type="text" name="name" required></p>
+    <p>電話：<input type="text" name="phone" required></p>
+    <p>Email：<input type="email" name="email" required></p>
+    <p><input type="checkbox" required> 我已閱讀並同意免責聲明</p>
+    <p><button type="submit">送出</button></p>
+  </form>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "2007662408-DaPa0le6" }); // 替換成你的 LIFF ID
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      } else {
+        const profile = await liff.getProfile();
+        const uid = liff.getDecodedIDToken().sub;
+        document.getElementById('uid').textContent = uid;
+
+        const form = document.getElementById("registerForm");
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const data = {
+            uid: uid,
+            name: form.name.value,
+            phone: form.phone.value,
+            email: form.email.value
+          };
+          alert("資料擷取成功：\n" + JSON.stringify(data, null, 2));
+        });
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
