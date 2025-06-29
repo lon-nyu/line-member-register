@@ -73,7 +73,8 @@
   </form>
 
   <script>
-    const liffId = "2007662408-DaPa0le6";
+    const liffId = "2007662408-DaPa0le6"; // 請填入你的 LIFF ID
+    const scriptURL = "https://script.google.com/macros/s/AKfycby5-GG23mEFbdwN9ecahMyj0dz-zt_9SBf0PoVPY5LklMi1nKD8xsk4IfF1GeIfon53cw/exec"; // 你的 Apps Script 網址
 
     async function initLiff() {
       await liff.init({ liffId });
@@ -96,7 +97,24 @@
         email: document.getElementById("email").value,
         agreed: document.getElementById("agree").checked
       };
-      alert("✅ 表單已送出：\n" + JSON.stringify(data, null, 2));
+
+      fetch(scriptURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(data)
+      })
+      .then(response => {
+        if (response.ok) {
+          alert("✅ 註冊成功！");
+          document.getElementById("registerForm").reset();
+        } else {
+          alert("❌ 傳送失敗，請稍後再試");
+        }
+      })
+      .catch(error => {
+        console.error("錯誤：", error);
+        alert("❌ 發生錯誤：" + error.message);
+      });
     });
   </script>
 </body>
