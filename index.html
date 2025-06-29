@@ -10,14 +10,23 @@
     input[type="text"],
     input[type="email"],
     input[type="tel"] {
-      width: 100%; padding: 0.5em; margin-top: 0.3em;
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.3em;
     }
     button {
-      margin-top: 1.5em; padding: 0.7em; width: 100%; font-size: 1em;
+      margin-top: 1.5em;
+      padding: 0.7em;
+      width: 100%;
+      font-size: 1em;
     }
     .disclaimer-box {
-      border: 1px solid #ccc; padding: 1em; margin-top: 1em;
-      background-color: #f9f9f9; max-height: 300px; overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 1em;
+      margin-top: 1em;
+      background-color: #f9f9f9;
+      max-height: 300px;
+      overflow-y: auto;
     }
   </style>
 </head>
@@ -25,29 +34,42 @@
   <h1>會員註冊</h1>
   <form id="registerForm">
     <input type="hidden" id="uid" name="uid">
-    <label>姓名 <input type="text" id="name" required></label>
-    <label>手機 <input type="tel" id="phone" required></label>
-    <label>Email <input type="email" id="email" required></label>
+
+    <label>姓名
+      <input type="text" id="name" name="name" required>
+    </label>
+
+    <label>手機
+      <input type="tel" id="phone" name="phone" required>
+    </label>
+
+    <label>Email
+      <input type="email" id="email" name="email" required>
+    </label>
 
     <div class="disclaimer-box">
       <strong>📄 鑑定卡代送服務免責聲明：</strong>
       <ol>
-        <li>本公司僅提供代送鑑定服務，不參與卡片實際鑑定判定。</li>
-        <li>所有送件皆以使用者提供資訊為準，本公司不負責資料錯誤損失。</li>
-        <li>高價卡請主動提出，未申報遺失最高賠新台幣 5,000 元及退還鑑定費。</li>
-        <li>寄送期間如有遺失或毀損，本公司協助申訴但不負賠償。</li>
-        <li>如於國外遭扣留或延誤，本公司不保證結果。</li>
-        <li>提交即視為同意條款，爭議以台灣法律為準據。</li>
+        <li>本公司僅提供代送鑑定服務，不參與卡片實際鑑定判定。鑑定結果由原鑑定機構決定，本公司不保證任何評級結果。</li>
+        <li>所有送件皆以使用者所提供資訊為準。請使用者確認卡片資訊，本公司不負責填寫錯誤導致之損失。</li>
+        <li>如有特別高價卡片，請主動提出，由本公司進行專案處理。如未主動申報，卡片如遺失僅依通知日裸卡市價賠償，最高不超過新台幣 5,000 元，並全額退還該卡之鑑定費用。</li>
+        <li>卡片寄送期間如有遺失、延誤、毀損，本公司協助申訴，但不負最終賠償責任。</li>
+        <li>卡片若於國外遭遇查扣或延誤，本公司協助處理但不保證解決時程與結果。</li>
+        <li>所有資料提交即視為已同意本免責條款，爭議以台灣法律為準據。</li>
       </ol>
     </div>
 
-    <label><input type="checkbox" id="agree" required> 我已閱讀並同意全部條款</label>
+    <label>
+      <input type="checkbox" id="agree" required>
+      我已閱讀並同意全部條款
+    </label>
+
     <button type="submit">送出</button>
   </form>
 
   <script>
-    const liffId = "2007662408-DaPa0le6";
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwqyfHdZ90WkCovI9TVrYZJ5n56nb1uzWW8TXN2rH-JA3C2RTRYdVjHHu6ZXpfIJ3ZURQ/exec";
+    const liffId = "2007662408-DaPa0le6"; // 替換為你的 LIFF ID
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwqyfHdZ90WkCovI9TVrYZJ5n56nb1uzWW8TXN2rH-JA3C2RTRYdVjHHu6ZXpfIJ3ZURQ/exec"; // 替換為你的 Google Apps Script URL
 
     async function initLiff() {
       await liff.init({ liffId });
@@ -63,17 +85,18 @@
 
     document.getElementById("registerForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const data = {
-        uid: document.getElementById("uid").value,
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        email: document.getElementById("email").value
-      };
+
+      const formData = new URLSearchParams();
+      formData.append("lineUid", document.getElementById("uid").value);
+      formData.append("name", document.getElementById("name").value);
+      formData.append("phone", document.getElementById("phone").value);
+      formData.append("email", document.getElementById("email").value);
+      formData.append("agreed", document.getElementById("agree").checked);
 
       fetch(scriptURL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
       })
       .then(response => {
         if (response.ok) {
